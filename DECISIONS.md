@@ -1,0 +1,39 @@
+# Architecture & Debugging Decisions
+
+Please fill out the four sections below concisely before submitting your solution.
+
+## 1. Root-Cause Diagnosis
+What specific bottlenecks and failure modes did you observe in the original codebase under concurrent load?
+
+- **Event-loop / CPU behavior:** `scrub_and_fingerprint` ran 120,000 chained SHA-256 rounds (~40-60 ms of pure CPU) directly inside the `async` handler. A coroutine that never yields blocks the single event-loop thread, so a 60-request burst put ~3 s of serialized CPU in front of `/health` and every other request. The handler also `await`ed the downstream call, so each request stayed open for the downstream's full latency.
+- **Concurrency & race conditions:** `X-Idempotency-Key` was only checked for presence, never used, and the schema had only `NOT NULL`, no `UNIQUE`. Every retry inserted a new row and was forwarded again. A downstream `503` made `raise_for_status()` raise, so `mark_delivered` never ran, the row stayed `pending`, and the sender received a `500` and retried, creating more duplicates. In the original failing run, 6 of 60 responses were `500`.
+- **Resource & connection management:** a new SQLite connection (and aiosqlite thread) per call and a new `httpx.AsyncClient` per request (no connection reuse). SQLite ran in default rollback-journal mode with a disk sync on every commit, and competing writers just sleep-retried the lock. In our first refactor (per-call connections, 8 delivery workers) p95 ingest latency was still 591 ms, consistent with write-lock contention. One shared connection with queued writes brought the test under the 250 ms limit.
+
+## 2. Concurrency & Offloading Strategy
+How did you separate CPU-bound preprocessing, HTTP acknowledgment, and downstream delivery? Why did you choose your specific concurrency primitives over alternatives (e.g., `asyncio.to_thread` vs. `ProcessPoolExecutor` vs. FastAPI `BackgroundTasks`)?
+
+- **Acknowledgment (request path):** validate the header, run the cheap regex redaction (microseconds), do one idempotent `INSERT`, return `202`. No hashing and no network call in the request.
+- **CPU-bound fingerprint:** computed by a background worker in a `ProcessPoolExecutor` (size `min(4, cpu_count - 1)`), so the event loop never runs it.
+- **Delivery:** 3 asyncio worker tasks read from a durable queue (the `events` table). Each claims a row, computes the fingerprint if missing, posts with one shared `httpx.AsyncClient` (5 s timeout), and marks it `delivered`. Transient failures (5xx, 429, transport errors) are rescheduled with exponential backoff plus jitter.
+- **Why not `asyncio.to_thread` / thread pool:** CPython's `hashlib` releases the GIL only for inputs of roughly 2 KB or more. Each round here hashes a 32-byte digest, so threads would keep the GIL and still compete with the event loop. (Reasoned from CPython behavior; not benchmarked separately.) Separate processes have their own GIL.
+- **Why not `BackgroundTasks`:** tasks live in process memory, so work acknowledged with `202` is lost on a crash or restart. They also have no retry, no backpressure, and no concurrency limit. A SQLite-backed queue keeps everything inside the "Python + SQLite only" constraint.
+- **Worker count (measured, single runs):** 1 worker failed (only 15 of 30 events delivered inside the test's 6 s window), 2 passed barely (6.59 s), 3 passed comfortably (4.38 s). Delivery time is dominated by waiting on the downstream, not CPU, so the count is set by downstream latency. More workers would only add contention on SQLite's single writer.
+
+## 3. Idempotency & SQLite Concurrency
+How does your implementation guarantee zero duplicate processing when two identical webhook retries arrive at the exact same millisecond? What SQLite settings or constraints did you rely on?
+
+- **Constraints, not checks:** `idempotency_key TEXT NOT NULL UNIQUE` and `event_id TEXT NOT NULL UNIQUE`, written with `INSERT ... ON CONFLICT DO NOTHING`. SQLite serializes writers, so when two identical requests collide exactly one insert wins. The other gets `rowcount == 0`, returns `202` with `"status": "duplicate"`, and does not wake the worker. There is no check-then-insert window to race through.
+- **No duplicate deliveries:** only rows drive delivery, so one row means one delivery chain. Workers claim a row with a single atomic statement (`UPDATE ... WHERE id = (SELECT ... LIMIT 1) RETURNING ...`) that flips it to `processing`, so two workers cannot take the same row.
+- **SQLite settings:** `journal_mode=WAL` (readers don't block the writer), `synchronous=NORMAL` (no fsync on every commit), `busy_timeout=10000`, plus one shared connection with an `asyncio.Lock` so writes queue in order inside the process instead of retrying against the file lock.
+- **Verified:** in the burst test (60 requests = 30 unique events x 2), the database held exactly 30 rows (30 distinct `event_id`s), all `delivered`.
+
+## 4. Failure Modes & Production Trade-offs
+- What happens in your design if the downstream service is completely unreachable for 60 seconds?
+  - Ingestion is unaffected: `/webhooks/ingest` keeps returning `202` and rows accumulate as `pending` (there is no backpressure limit). Each delivery fails with a connection error or timeout, is treated as transient, and is rescheduled with backoff (0.1 s x 2^n, capped at 5 s, with jitter) for up to 40 attempts. By calculation that is about 132 s of total backoff, so a 60 s outage is covered (calculated, not tested with a real outage). When the downstream returns, the backlog drains at the worker rate. After 40 failed attempts, or on any 4xx, the row becomes `failed` with `last_error` stored and is not retried automatically. Requeue it with `UPDATE events SET status='pending', attempts=0 WHERE status='failed'`. If the downstream hangs instead of refusing, each attempt can take up to the 5 s timeout, so draining is slow with 3 workers.
+- What happens if this service process crashes 50ms after acknowledging a webhook?
+  - The `202` is only returned after the `INSERT` is committed, so the event is already on disk. On restart, `init_db` moves any `processing` row back to `pending` and the workers resume (the fingerprint is recomputed if still `NULL`). A process crash loses nothing. An OS crash or power loss could lose the last few commits because `synchronous=NORMAL` skips the per-commit fsync; use `synchronous=FULL` if durability matters more than latency. If the crash lands after the downstream accepted the event but before `mark_delivered`, the event is sent again after restart, so delivery is at-least-once. We send `Idempotency-Key: <event_id>`, and the downstream must dedupe on it.
+- What would break first if we deployed this container with `--workers 4` instead of 1?
+  - **Correctness, first:** startup recovery (`processing` to `pending`) assumes a single process. A worker process that (re)starts would requeue rows another process is delivering, causing duplicate downstream deliveries. Fix: give claims a lease (`locked_until`) and requeue only expired ones.
+  - **Performance, next:** the `asyncio.Lock` only coordinates within one process, so writers fall back to SQLite's file lock and `busy_timeout`, and p95 would rise. Each process also starts its own 3 delivery tasks and its own process pool, so CPU is oversubscribed.
+  - **Still safe:** the `UNIQUE` constraints and the atomic claim are enforced by SQLite itself, so there are no duplicate rows and no double-claims across processes. SQLite only works across processes on the same host and volume. Multiple containers would need a real database (for example PostgreSQL with `SELECT ... FOR UPDATE SKIP LOCKED`).
+- Also noted: uniqueness is global per `event_id` and `idempotency_key`. In production it should be scoped per tenant, `UNIQUE (tenant_id, ...)`. A repeated key with a different payload is treated as a duplicate without comparing payloads.

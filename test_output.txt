@@ -1,0 +1,434 @@
+/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:306: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to "function" scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session". Set it to "fixture-scope" to keep the current behavior.
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+============================= test session starts ==============================
+platform darwin -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/mohammadreza/Downloads/fastapi-webhook-assessment
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.16.0, asyncio-1.5.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/test_burst_load.py::test_burst_traffic_idempotency_and_event_loop_health ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 683, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    await route.handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1330, in handle
+    await super().handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 289, in handle
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 372, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/main.py", line 37, in ingest_webhook
+    downstream_res = await forward_event(payload.event_id, cleaned_text, fingerprint)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/downstream.py", line 20, in forward_event
+    response.raise_for_status()
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'http://127.0.0.1:9001/events'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 683, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    await route.handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1330, in handle
+    await super().handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 289, in handle
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 372, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/main.py", line 37, in ingest_webhook
+    downstream_res = await forward_event(payload.event_id, cleaned_text, fingerprint)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/downstream.py", line 20, in forward_event
+    response.raise_for_status()
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'http://127.0.0.1:9001/events'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 683, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    await route.handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1330, in handle
+    await super().handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 289, in handle
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 372, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/main.py", line 37, in ingest_webhook
+    downstream_res = await forward_event(payload.event_id, cleaned_text, fingerprint)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/downstream.py", line 20, in forward_event
+    response.raise_for_status()
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'http://127.0.0.1:9001/events'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 683, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    await route.handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1330, in handle
+    await super().handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 289, in handle
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 372, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/main.py", line 37, in ingest_webhook
+    downstream_res = await forward_event(payload.event_id, cleaned_text, fingerprint)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/downstream.py", line 20, in forward_event
+    response.raise_for_status()
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'http://127.0.0.1:9001/events'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 683, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    await route.handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1330, in handle
+    await super().handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 289, in handle
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 372, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/main.py", line 37, in ingest_webhook
+    downstream_res = await forward_event(payload.event_id, cleaned_text, fingerprint)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/downstream.py", line 20, in forward_event
+    response.raise_for_status()
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'http://127.0.0.1:9001/events'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 422, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/applications.py", line 1194, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 683, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 2811, in app
+    await route.handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 1330, in handle
+    await super().handle(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/routing.py", line 289, in handle
+    await self.app(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 166, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 152, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 745, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 372, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/main.py", line 37, in ingest_webhook
+    downstream_res = await forward_event(payload.event_id, cleaned_text, fingerprint)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/app/downstream.py", line 20, in forward_event
+    response.raise_for_status()
+  File "/Users/mohammadreza/Downloads/fastapi-webhook-assessment/.venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'http://127.0.0.1:9001/events'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+FAILED
+
+=================================== FAILURES ===================================
+_____________ test_burst_traffic_idempotency_and_event_loop_health _____________
+
+running_services = PosixPath('/private/var/folders/bz/rn_xx67n7fz5n33s9dmbh2qc0000gn/T/pytest-of-mohammadreza/pytest-0/test_burst_traffic_idempotency0/test_webhooks.db')
+
+    @pytest.mark.asyncio
+    async def test_burst_traffic_idempotency_and_event_loop_health(running_services):
+        db_file = running_services
+        unique_count = 30
+    
+        # Build 60 requests: 30 unique events, each duplicated with the same idempotency key
+        requests_to_send = []
+        for i in range(unique_count):
+            event_id = f"evt_{i:03d}"
+            idem_key = f"idem_{i:03d}"
+            payload = {
+                "event_id": event_id,
+                "tenant_id": f"tenant_{i % 3}",
+                "content": f"Customer user{i}@example.com SSN 123-45-6789 submitted ticket #{i}",
+            }
+            requests_to_send.append((idem_key, payload))
+            requests_to_send.append((idem_key, payload))  # Concurrent retry duplicate
+    
+        health_latencies_ms: list[float] = []
+        ingest_latencies_ms: list[float] = []
+        stop_health_probe = asyncio.Event()
+    
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            await client.post(f"{DOWNSTREAM_URL}/reset")
+    
+            async def probe_health():
+                while not stop_health_probe.is_set():
+                    t0 = time.perf_counter()
+                    resp = await client.get(f"{INGEST_URL}/health")
+                    elapsed_ms = (time.perf_counter() - t0) * 1000
+                    assert resp.status_code == 200
+                    health_latencies_ms.append(elapsed_ms)
+                    await asyncio.sleep(0.05)
+    
+            async def send_webhook(idem_key: str, payload: dict):
+                t0 = time.perf_counter()
+                resp = await client.post(
+                    f"{INGEST_URL}/webhooks/ingest",
+                    json=payload,
+                    headers={"X-Idempotency-Key": idem_key},
+                )
+                elapsed_ms = (time.perf_counter() - t0) * 1000
+                ingest_latencies_ms.append(elapsed_ms)
+                return resp
+    
+            probe_task = asyncio.create_task(probe_health())
+            try:
+                responses = await asyncio.gather(
+                    *(send_webhook(key, body) for key, body in requests_to_send)
+                )
+            finally:
+                stop_health_probe.set()
+                await probe_task
+    
+            # 1. All 60 webhook requests must succeed quickly (200 or 202)
+            status_codes = [r.status_code for r in responses]
+>           assert all(code in (200, 202) for code in status_codes), f"Failed responses: {status_codes}"
+E           AssertionError: Failed responses: [200, 500, 200, 200, 200, 200, 200, 200, 500, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 500, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 500, 200, 200, 200, 500, 200, 200, 200, 200, 200, 200, 200, 500, 200, 200, 200, 200]
+E           assert False
+E            +  where False = all(<generator object test_burst_traffic_idempotency_and_event_loop_health.<locals>.<genexpr> at 0x10a50cba0>)
+
+tests/test_burst_load.py:113: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_burst_load.py::test_burst_traffic_idempotency_and_event_loop_health
+============================== 1 failed in 3.28s ===============================
